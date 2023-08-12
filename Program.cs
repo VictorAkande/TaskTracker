@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace TaskTracker
@@ -22,7 +23,7 @@ namespace TaskTracker
         public DateTime StartDate { get; set; }
         public DateTime ExpectedEndDate { get; set; }
         public int ProgrammerId { get; set; }
-        public Status Status { get; set; }
+        public Status Status { get; set; } = Status.New;
     }
 
     enum Status
@@ -37,6 +38,7 @@ namespace TaskTracker
     internal class Program
     {
        static List<Programmer> programmers = new List<Programmer>();
+       static List<Task> tasks = new List<Task>();
 
         static void Main(string[] args)
         {
@@ -61,6 +63,9 @@ namespace TaskTracker
                     case 1:
                         AddProgrammer();
                         break;
+                    case 2:
+                        AddTask();
+                        break;
                     case 6:
                         ViewProgrammers();
                         break;
@@ -71,11 +76,63 @@ namespace TaskTracker
                         Console.WriteLine("Invalid Choice. Please Try Again");
                         break;
 
-
-
                 }
 
             }
+        }
+
+        private static void AddTask()
+        {
+
+            // take user inputs
+            Console.Write("Enter Task Name: ");
+            string taskName = Console.ReadLine();
+
+            Console.Write("Enter Dependency: ");
+            string dependency = Console.ReadLine();
+
+            Console.Write("Enter Comment: ");
+            string comment = Console.ReadLine();
+
+            Console.Write("Enter Start Date (yyyy-MM-dd): "); 
+            DateTime startDate = DateTime.Parse(Console.ReadLine());
+
+            Console.Write("Enter Expected End Date (yyyy-MM-dd): ");
+            DateTime expectedEndDate = DateTime.Parse(Console.ReadLine());
+
+            Console.Write("Enter Programmer Id: ");
+            int programmerId = int.Parse(Console.ReadLine());
+
+            ///Check is programmer exist
+
+            if (!ProgrammerExists(programmerId))
+            {
+                Console.WriteLine("Programmer does not exist.");
+                return;
+            }
+
+            //Generate TaskID
+            int taskId = tasks.Count + 1;
+
+            //Create new task object
+            var taskToAdd = new Task
+            {
+                TaskId = taskId,
+                TaskName = taskName,
+                Dependency = dependency,
+                Comment = comment,
+                StartDate = startDate,
+                ExpectedEndDate = expectedEndDate,
+                ProgrammerId = programmerId,
+                Status = Status.New
+            };
+
+            //add created task to Task List
+            tasks.Add(taskToAdd);
+
+            Console.WriteLine("Task added successfully.");
+
+
         }
 
         private static void ViewProgrammers()
@@ -120,5 +177,27 @@ namespace TaskTracker
             Console.WriteLine();
             //save
         }
+
+
+        static bool ProgrammerExists(int programmerId)
+        {
+            return programmers.Any(p => p.Id == programmerId);
+
+            //foreach (var item in programmers)
+            //{
+            //    if (item.Id != programmerId)
+            //    {
+            //        continue;
+            //    }
+            //    else
+            //    {
+            //        return true;
+            //    }
+
+            //}
+
+            //return false;
+        }
+
     }
 }
