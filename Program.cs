@@ -37,8 +37,8 @@ namespace TaskTracker
 
     internal class Program
     {
-       static List<Programmer> programmers = new List<Programmer>();
-       static List<Task> tasks = new List<Task>();
+        static List<Programmer> programmers = new List<Programmer>();
+        static List<Task> tasks = new List<Task>();
 
         static void Main(string[] args)
         {
@@ -66,11 +66,14 @@ namespace TaskTracker
                     case 2:
                         AddTask();
                         break;
+                    case 4:
+                        UpdateTask();
+                        break;
                     case 6:
                         ViewProgrammers();
                         break;
                     case 7:
-                        exit = true; 
+                        exit = true;
                         break;
                     default:
                         Console.WriteLine("Invalid Choice. Please Try Again");
@@ -78,6 +81,41 @@ namespace TaskTracker
 
                 }
 
+            }
+        }
+
+        private static void UpdateTask()
+        {
+            Console.Write("Enter Task Id: ");
+            int taskId = int.Parse(Console.ReadLine());
+
+            Task task = tasks.Find(t => t.TaskId == taskId);
+
+            if (task == null)
+            {
+                Console.WriteLine("Task not found.");
+                return;
+            }
+
+            Console.WriteLine($"Current Status: {task.Status}");
+
+            Console.WriteLine("Select new status:");
+
+            foreach (Status status in Enum.GetValues(typeof(Status)))
+            {
+                Console.WriteLine($"{(int)status}. {status}");
+            }
+
+            int newStatusValue = int.Parse(Console.ReadLine());
+
+            if (Enum.IsDefined(typeof(TaskStatus), newStatusValue))
+            {
+                task.Status = (Status)newStatusValue;
+                Console.WriteLine("Task status updated.");
+            }
+            else
+            {
+                Console.WriteLine("Invalid status value.");
             }
         }
 
@@ -94,7 +132,7 @@ namespace TaskTracker
             Console.Write("Enter Comment: ");
             string comment = Console.ReadLine();
 
-            Console.Write("Enter Start Date (yyyy-MM-dd): "); 
+            Console.Write("Enter Start Date (yyyy-MM-dd): ");
             DateTime startDate = DateTime.Parse(Console.ReadLine());
 
             Console.Write("Enter Expected End Date (yyyy-MM-dd): ");
@@ -153,7 +191,7 @@ namespace TaskTracker
                 Console.WriteLine("________________________________________________________");
                 Console.WriteLine();
             }
-            
+
         }
 
         private static void AddProgrammer()
@@ -177,7 +215,6 @@ namespace TaskTracker
             Console.WriteLine();
             //save
         }
-
 
         static bool ProgrammerExists(int programmerId)
         {
